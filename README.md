@@ -1,4 +1,4 @@
 Yatzy
 =====
 
-A implementation of Yatzy in Java
+An implementation of Yatzy in Java
