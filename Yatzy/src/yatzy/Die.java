@@ -17,6 +17,14 @@ public class Die {
         this.random = new SecureRandom();
         this.value = 0;        
     }
+    
+    public Die(int value) {
+        if (value < 1 || value > 6) {
+            throw new IllegalArgumentException("Invalid value!");
+        }
+        this.random = new SecureRandom();
+        this.value = value;        
+    }    
 
     public int throwDie() {
         value = random.nextInt(6) + 1;

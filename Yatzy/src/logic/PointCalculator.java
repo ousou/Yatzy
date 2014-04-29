@@ -1,9 +1,12 @@
 package logic;
 
+import java.util.Collections;
+import java.util.List;
 import yatzy.HandType;
 import yatzy.YatzyHand;
 
 /**
+ * Calculates points for yatzy hands.
  *
  * @author Sebastian Björkqvist
  */
@@ -12,79 +15,202 @@ public class PointCalculator {
     public int calculatePoints(YatzyHand hand, HandType type) {
         switch (type) {
             case ONES:
-                break;
+                return calculateSame(hand, 1);
             case TWOS:
-                break;
+                return calculateSame(hand, 2);
             case THREES:
-                break;
+                return calculateSame(hand, 3);
             case FOURS:
-                break;
+                return calculateSame(hand, 4);
             case FIVES:
-                break;
+                return calculateSame(hand, 5);
             case SIXES:
-                break;
+                return calculateSame(hand, 6);
             case ONE_PAIR:
-                break;
+                return calculatePair(hand);
             case TWO_PAIR:
-                break;
+                return calculateTwoPair(hand);
             case THREE_OF_A_KIND:
-                break;
+                return calculateThreeOfAKind(hand);
             case FOUR_OF_A_KIND:
-                break;
+                return calculateFourOfAKind(hand);
             case SMALL_STRAIGHT:
-                break;
+                return calculateSmallStraight(hand);
             case LARGE_STRAIGHT:
-                break;
+                return calculateLargeStraight(hand);
             case FULL_HOUSE:
-                break;
+                return calculateFullHouse(hand);
             case CHANCE:
-                break;
+                return calculateChance(hand);
             case YATZY:
-                break;
+                return calculateYatzy(hand);
             default:
                 throw new IllegalArgumentException("Invalid hand type!");
         }
-        return -1;
     }
-    
+
     private int calculateSame(YatzyHand hand, int value) {
-        return -1;
+        int sum = 0;
+        for (Integer i : hand.getDiceValues()) {
+            if (i == value) {
+                sum += value;
+            }
+        }
+        return sum;
     }
-    
+
     private int calculatePair(YatzyHand hand) {
-        return -1;
+        List<Integer> diceValues = getSortedDiceValues(hand);
+
+        for (int i = 0; i < 4; i++) {
+            if (diceValues.get(i) == diceValues.get(i + 1)) {
+                return 2 * diceValues.get(i);
+            }
+        }
+        return 0;
     }
-    
+
     private int calculateTwoPair(YatzyHand hand) {
-        return -1;
-    }  
-    
+        List<Integer> diceValues = getSortedDiceValues(hand);
+
+        int firstPair;
+        int secondStart;
+        // Finding first pair
+        if (diceValues.get(0) == diceValues.get(1)) {
+            firstPair = diceValues.get(0);
+            secondStart = 2;
+        } else if (diceValues.get(1) == diceValues.get(2)) {
+            firstPair = diceValues.get(1);
+            secondStart = 3;
+        } else {
+            return 0;
+        }
+
+        // Finding second pair
+        for (int i = secondStart; i < 4; i++) {
+            if (diceValues.get(i) == diceValues.get(i + 1)
+                    && diceValues.get(i) != firstPair) {
+                return 2 * diceValues.get(i) + 2 * firstPair;
+            }
+        }
+        return 0;
+    }
+
     private int calculateThreeOfAKind(YatzyHand hand) {
-        return -1;
-    }  
-    
+        List<Integer> diceValues = getSortedDiceValues(hand);
+
+        for (int i = 0; i < 3; i++) {
+            if (diceValues.get(i) == diceValues.get(i + 1)
+                    && diceValues.get(i + 1) == diceValues.get(i + 2)) {
+                return 3 * diceValues.get(i);
+            }
+        }
+        return 0;
+    }
+
     private int calculateFourOfAKind(YatzyHand hand) {
-        return -1;
-    }  
-    
+        List<Integer> diceValues = getSortedDiceValues(hand);
+
+        for (int i = 0; i < 2; i++) {
+            if (diceValues.get(i) == diceValues.get(i + 1)
+                    && diceValues.get(i + 1) == diceValues.get(i + 2)
+                    && diceValues.get(i + 2) == diceValues.get(i + 3)) {
+                return 4 * diceValues.get(i);
+            }
+        }
+        return 0;
+    }
+
     private int calculateSmallStraight(YatzyHand hand) {
-        return -1;
-    }          
-    
+        List<Integer> diceValues = getSortedDiceValues(hand);
+
+        if (diceValues.get(0) != 5) {
+            return 0;
+        }
+
+        for (int i = 0; i < 4; i++) {
+            if (diceValues.get(i) - 1 != diceValues.get(i + 1)) {
+                return 0;
+            }
+        }
+
+        return 15;
+    }
+
     private int calculateLargeStraight(YatzyHand hand) {
-        return -1;
-    }    
-    
+        List<Integer> diceValues = getSortedDiceValues(hand);
+
+        if (diceValues.get(0) != 6) {
+            return 0;
+        }
+
+        for (int i = 0; i < 4; i++) {
+            if (diceValues.get(i) - 1 != diceValues.get(i + 1)) {
+                return 0;
+            }
+        }
+
+        return 20;
+    }
+
     private int calculateFullHouse(YatzyHand hand) {
-        return -1;
-    }         
-    
+        List<Integer> diceValues = getSortedDiceValues(hand);        
+        
+        int possibleSum = 0;
+        int firstValue;
+        boolean pairFirst;
+        if (diceValues.get(0) == diceValues.get(1)) {
+            firstValue = diceValues.get(0);
+            if (diceValues.get(0) == diceValues.get(2)) {
+                possibleSum += 3 * diceValues.get(0);
+                pairFirst = false;
+            } else {
+                possibleSum += 2 * diceValues.get(0);
+                pairFirst = true;
+            }
+        } else {
+            return 0;
+        }
+        if (pairFirst) {
+            if (diceValues.get(2) == diceValues.get(3)
+                    && diceValues.get(3) == diceValues.get(4)
+                    && firstValue != diceValues.get(2)) {
+                possibleSum += 3 * diceValues.get(2);
+                return possibleSum;
+            }
+        } else {
+            if (diceValues.get(3) == diceValues.get(4)
+                    && firstValue != diceValues.get(3)) {
+                possibleSum += 2 * diceValues.get(3);
+                return possibleSum;
+            }
+        }
+
+        return 0;
+    }
+
     private int calculateChance(YatzyHand hand) {
-        return -1;
-    }   
-    
+        int sum = 0;
+        for (Integer i : hand.getDiceValues()) {
+            sum += i;
+        }
+        return sum;
+    }
+
     private int calculateYatzy(YatzyHand hand) {
-        return -1;
-    }   
-    
+        List<Integer> values = hand.getDiceValues();
+        for (int i = 1; i < 5; i++) {
+            if (values.get(i) != values.get(0)) {
+                return 0;
+            }
+        }
+        return 50;
+    }
+
+    private List<Integer> getSortedDiceValues(YatzyHand hand) {
+        List<Integer> diceValues = hand.getDiceValues();
+        Collections.sort(diceValues);
+        Collections.reverse(diceValues);
+        return diceValues;
+    }
 }
