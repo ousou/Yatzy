@@ -3,16 +3,17 @@ package logic;
 import java.util.Collections;
 import java.util.List;
 import yatzy.HandType;
-import yatzy.YatzyHand;
+import yatzy.IYatzyHand;
 
 /**
  * Calculates points for yatzy hands.
  *
  * @author Sebastian Björkqvist
  */
-public class PointCalculator {
+public class PointCalculator implements IPointCalculator {
 
-    public int calculatePoints(YatzyHand hand, HandType type) {
+    @Override
+    public int calculatePoints(IYatzyHand hand, HandType type) {
         switch (type) {
             case ONES:
                 return calculateSame(hand, 1);
@@ -49,7 +50,7 @@ public class PointCalculator {
         }
     }
 
-    private int calculateSame(YatzyHand hand, int value) {
+    private int calculateSame(IYatzyHand hand, int value) {
         int sum = 0;
         for (Integer i : hand.getDiceValues()) {
             if (i == value) {
@@ -59,7 +60,7 @@ public class PointCalculator {
         return sum;
     }
 
-    private int calculatePair(YatzyHand hand) {
+    private int calculatePair(IYatzyHand hand) {
         List<Integer> diceValues = getSortedDiceValues(hand);
 
         for (int i = 0; i < 4; i++) {
@@ -70,7 +71,7 @@ public class PointCalculator {
         return 0;
     }
 
-    private int calculateTwoPair(YatzyHand hand) {
+    private int calculateTwoPair(IYatzyHand hand) {
         List<Integer> diceValues = getSortedDiceValues(hand);
 
         int firstPair;
@@ -96,7 +97,7 @@ public class PointCalculator {
         return 0;
     }
 
-    private int calculateThreeOfAKind(YatzyHand hand) {
+    private int calculateThreeOfAKind(IYatzyHand hand) {
         List<Integer> diceValues = getSortedDiceValues(hand);
 
         for (int i = 0; i < 3; i++) {
@@ -108,7 +109,7 @@ public class PointCalculator {
         return 0;
     }
 
-    private int calculateFourOfAKind(YatzyHand hand) {
+    private int calculateFourOfAKind(IYatzyHand hand) {
         List<Integer> diceValues = getSortedDiceValues(hand);
 
         for (int i = 0; i < 2; i++) {
@@ -121,7 +122,7 @@ public class PointCalculator {
         return 0;
     }
 
-    private int calculateSmallStraight(YatzyHand hand) {
+    private int calculateSmallStraight(IYatzyHand hand) {
         List<Integer> diceValues = getSortedDiceValues(hand);
 
         if (diceValues.get(0) != 5) {
@@ -137,7 +138,7 @@ public class PointCalculator {
         return 15;
     }
 
-    private int calculateLargeStraight(YatzyHand hand) {
+    private int calculateLargeStraight(IYatzyHand hand) {
         List<Integer> diceValues = getSortedDiceValues(hand);
 
         if (diceValues.get(0) != 6) {
@@ -153,7 +154,7 @@ public class PointCalculator {
         return 20;
     }
 
-    private int calculateFullHouse(YatzyHand hand) {
+    private int calculateFullHouse(IYatzyHand hand) {
         List<Integer> diceValues = getSortedDiceValues(hand);        
         
         int possibleSum = 0;
@@ -189,7 +190,7 @@ public class PointCalculator {
         return 0;
     }
 
-    private int calculateChance(YatzyHand hand) {
+    private int calculateChance(IYatzyHand hand) {
         int sum = 0;
         for (Integer i : hand.getDiceValues()) {
             sum += i;
@@ -197,7 +198,7 @@ public class PointCalculator {
         return sum;
     }
 
-    private int calculateYatzy(YatzyHand hand) {
+    private int calculateYatzy(IYatzyHand hand) {
         List<Integer> values = hand.getDiceValues();
         for (int i = 1; i < 5; i++) {
             if (values.get(i) != values.get(0)) {
@@ -207,7 +208,7 @@ public class PointCalculator {
         return 50;
     }
 
-    private List<Integer> getSortedDiceValues(YatzyHand hand) {
+    private List<Integer> getSortedDiceValues(IYatzyHand hand) {
         List<Integer> diceValues = hand.getDiceValues();
         Collections.sort(diceValues);
         Collections.reverse(diceValues);
