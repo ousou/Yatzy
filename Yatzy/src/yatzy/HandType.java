@@ -42,23 +42,23 @@ public enum HandType {
     }
     
     public static List<HandType> getAllPlayableHandTypes() {
-        List<HandType> allTypes = new ArrayList<>(Arrays.asList(values()));
-        allTypes.remove(HandType.UPPER_SUM);
-        allTypes.remove(HandType.BONUS);
-        allTypes.remove(HandType.TOTAL);
-        return allTypes;
+        List<HandType> playableTypes = new ArrayList<>(Arrays.asList(values()));
+        playableTypes.remove(HandType.UPPER_SUM);
+        playableTypes.remove(HandType.BONUS);
+        playableTypes.remove(HandType.TOTAL);
+        return playableTypes;
     }
     
     public static List<HandType> getUpperHandTypes() {
-        List<HandType> allTypes = new ArrayList<>(Arrays.asList(values()));
-        allTypes.add(HandType.ONES);
-        allTypes.add(HandType.TWOS);
-        allTypes.add(HandType.THREES);
-        allTypes.add(HandType.FOURS);
-        allTypes.add(HandType.FIVES);
-        allTypes.add(HandType.SIXES);
+        List<HandType> upperHandTypes = new ArrayList<>();
+        upperHandTypes.add(HandType.ONES);
+        upperHandTypes.add(HandType.TWOS);
+        upperHandTypes.add(HandType.THREES);
+        upperHandTypes.add(HandType.FOURS);
+        upperHandTypes.add(HandType.FIVES);
+        upperHandTypes.add(HandType.SIXES);
         
-        return allTypes;
+        return upperHandTypes;
     }
 
     public boolean isPlayable() {

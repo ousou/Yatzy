@@ -33,27 +33,31 @@ public class YatzyScoreboardTest {
 
         assertEquals(4, scoreboard.putHandToPlace(players.get(0), hand, HandType.TWOS));
         assertEquals(4, scoreboard.getScoreAtPlace(players.get(0), HandType.TWOS));
+        assertEquals(4, scoreboard.getScoreAtPlace(players.get(0), HandType.UPPER_SUM));
         assertEquals(4, scoreboard.getTotalScore(players.get(0)));
 
         IYatzyHand hand2 = createHand(3, 2, 3, 3, 2);
 
         assertEquals(13, scoreboard.putHandToPlace(players.get(1), hand2, HandType.FULL_HOUSE));
         assertEquals(13, scoreboard.getScoreAtPlace(players.get(1), HandType.FULL_HOUSE));
+        assertEquals(4, scoreboard.getScoreAtPlace(players.get(0), HandType.UPPER_SUM));
         
         IYatzyHand hand3 = createHand(1, 1, 1, 1, 1);
         
         assertEquals(50, scoreboard.putHandToPlace(players.get(1), hand3, HandType.YATZY));
         assertEquals(50, scoreboard.getScoreAtPlace(players.get(1), HandType.YATZY));        
+        assertEquals(4, scoreboard.getScoreAtPlace(players.get(0), HandType.UPPER_SUM));
         
         assertEquals(63, scoreboard.getTotalScore(players.get(1)));
+        assertEquals(4, scoreboard.getScoreAtPlace(players.get(0), HandType.UPPER_SUM));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testPutHandToPlace2() {
         IYatzyHand hand = createHand(2, 2, 3, 4, 1);
         scoreboard.putHandToPlace(players.get(0), hand, HandType.TWOS);
 
-        scoreboard.getScoreAtPlace(players.get(0), HandType.ONES);
+        assertEquals(-1, scoreboard.getScoreAtPlace(players.get(0), HandType.ONES));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -98,6 +102,50 @@ public class YatzyScoreboardTest {
     @Test(expected = IllegalArgumentException.class)
     public void testGetScoreAtPlace2() {
         scoreboard.getScoreAtPlace(new Player("JEE", false), HandType.ONES);
+    }
+    
+    @Test
+    public void testBonus() {
+        IYatzyHand hand1 = createHand(1, 1, 1, 4, 5);        
+        IYatzyHand hand2 = createHand(2, 2, 2, 4, 1);
+        IYatzyHand hand3 = createHand(3, 3, 3, 4, 5);           
+        IYatzyHand hand4 = createHand(4, 4, 4, 6, 2);           
+        IYatzyHand hand5 = createHand(5, 5, 1, 4, 5);
+        IYatzyHand hand6 = createHand(1, 6, 6, 4, 6);           
+
+        scoreboard.putHandToPlace(players.get(0), hand1, HandType.ONES);        
+        scoreboard.putHandToPlace(players.get(0), hand2, HandType.TWOS);
+        scoreboard.putHandToPlace(players.get(0), hand3, HandType.THREES);
+        scoreboard.putHandToPlace(players.get(0), hand4, HandType.FOURS);
+        scoreboard.putHandToPlace(players.get(0), hand5, HandType.FIVES);
+        scoreboard.putHandToPlace(players.get(0), hand6, HandType.SIXES); 
+        
+        assertEquals(50, scoreboard.getScoreAtPlace(players.get(0), HandType.BONUS));
+        assertEquals(63, scoreboard.getScoreAtPlace(players.get(0), HandType.UPPER_SUM));
+        assertEquals(113, scoreboard.getTotalScore(players.get(0)));  
+        assertEquals(113, scoreboard.getScoreAtPlace(players.get(0), HandType.TOTAL));        
+    }
+    
+    @Test
+    public void testBonus2() {
+        IYatzyHand hand1 = createHand(1, 1, 2, 4, 5);        
+        IYatzyHand hand2 = createHand(2, 2, 2, 4, 1);
+        IYatzyHand hand3 = createHand(3, 3, 3, 4, 5);           
+        IYatzyHand hand4 = createHand(4, 4, 4, 6, 2);           
+        IYatzyHand hand5 = createHand(5, 5, 1, 4, 5);
+        IYatzyHand hand6 = createHand(1, 6, 6, 4, 6);           
+
+        scoreboard.putHandToPlace(players.get(0), hand1, HandType.ONES);        
+        scoreboard.putHandToPlace(players.get(0), hand2, HandType.TWOS);
+        scoreboard.putHandToPlace(players.get(0), hand3, HandType.THREES);
+        scoreboard.putHandToPlace(players.get(0), hand4, HandType.FOURS);
+        scoreboard.putHandToPlace(players.get(0), hand5, HandType.FIVES);
+        scoreboard.putHandToPlace(players.get(0), hand6, HandType.SIXES); 
+        
+        assertEquals(0, scoreboard.getScoreAtPlace(players.get(0), HandType.BONUS));
+        assertEquals(62, scoreboard.getScoreAtPlace(players.get(0), HandType.UPPER_SUM));
+        assertEquals(62, scoreboard.getTotalScore(players.get(0)));  
+        assertEquals(62, scoreboard.getScoreAtPlace(players.get(0), HandType.TOTAL));        
     }
 
     private IYatzyHand createHand(int i1, int i2, int i3, int i4, int i5) {

@@ -54,6 +54,10 @@ public class YatzyScoreboard implements IYatzyScoreboard {
         if (!players.contains(player)) {
             throw new IllegalArgumentException("Player " + player + " not found!");
         }        
+        Integer score = scores.get(player).get(type);
+        if (score != null) {
+            return score;
+        }
         
         return -1;
     }
@@ -63,15 +67,55 @@ public class YatzyScoreboard implements IYatzyScoreboard {
         if (!players.contains(player)) {
             throw new IllegalArgumentException("Player " + player + " not found!");
         }        
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Integer score = scores.get(player).get(HandType.TOTAL);
+        if (score != null) {
+            return score;
+        }
+        return 0;
     }
 
     private void checkBonus(Player player) {
         int upperSum = 0;
         
+        List<HandType> upperHandTypes = HandType.getUpperHandTypes();
+        Map<HandType, Integer> scoreMap = scores.get(player);
+        if (scoreMap.get(HandType.BONUS) != null) {
+            return;
+        }
+        boolean allUpperUsed = true;
+        
+        for (HandType t : upperHandTypes) {
+            Integer value = scoreMap.get(t);
+            if (value != null) {
+                upperSum += value;
+            } else {
+                allUpperUsed = false;
+            }
+        }
+        scoreMap.put(HandType.UPPER_SUM, upperSum);
+        if (upperSum >= 63) {
+            scoreMap.put(HandType.BONUS, 50);
+        } else if (allUpperUsed) {
+            scoreMap.put(HandType.BONUS, 0);
+        }
     }
 
     private void updateTotal(Player player) {
+        int totalSum = 0;
+        Map<HandType, Integer> scoreMap = scores.get(player);
+        List<HandType> playableTypes = HandType.getAllPlayableHandTypes();
+        for (HandType t : playableTypes) {
+            Integer value = scoreMap.get(t);
+            if (value != null) {
+                totalSum += value;
+            }
+        }
+        Integer bonus = scoreMap.get(HandType.BONUS);
+        if (bonus != null) {
+            totalSum += bonus;
+        }
+        
+        scoreMap.put(HandType.TOTAL, totalSum);
     }
 
 }
