@@ -3,7 +3,8 @@ package yatzy;
 import java.util.List;
 
 /**
- *
+ * Represents a yatzy hand with five dice.
+ * 
  * @author Sebastian Björkqvist
  */
 public interface IYatzyHand {

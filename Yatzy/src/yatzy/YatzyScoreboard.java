@@ -75,15 +75,14 @@ public class YatzyScoreboard implements IYatzyScoreboard {
     }
 
     private void checkBonus(Player player) {
-        int upperSum = 0;
-        
-        List<HandType> upperHandTypes = HandType.getUpperHandTypes();
         Map<HandType, Integer> scoreMap = scores.get(player);
         if (scoreMap.get(HandType.BONUS) != null) {
             return;
         }
-        boolean allUpperUsed = true;
         
+        boolean allUpperUsed = true;        
+        int upperSum = 0;        
+        List<HandType> upperHandTypes = HandType.getUpperHandTypes();        
         for (HandType t : upperHandTypes) {
             Integer value = scoreMap.get(t);
             if (value != null) {
@@ -101,9 +100,9 @@ public class YatzyScoreboard implements IYatzyScoreboard {
     }
 
     private void updateTotal(Player player) {
-        int totalSum = 0;
         Map<HandType, Integer> scoreMap = scores.get(player);
         List<HandType> playableTypes = HandType.getAllPlayableHandTypes();
+        int totalSum = 0;        
         for (HandType t : playableTypes) {
             Integer value = scoreMap.get(t);
             if (value != null) {

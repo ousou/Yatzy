@@ -18,7 +18,7 @@ public class YatzyHand implements IYatzyHand {
         if (dice.size() != 5) {
             throw new IllegalArgumentException("There must be five dice");
         }
-        this.dice = dice;
+        this.dice = new ArrayList<>(dice);
     }
 
     @Override
